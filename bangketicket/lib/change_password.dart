@@ -64,14 +64,9 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         if (data['success'] == true) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Password changed successfully. Please log in again.')),
-          );
           _newPasswordController.clear();
           _confirmPasswordController.clear();
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const LoginPage()),
-          );
+          _showPasswordChangedSuccessDialog();
         } else {
           setState(() {
             _errorMessage = data['message'] ?? 'Error changing password';
@@ -90,6 +85,71 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
     }
   }
 
+  void _showPasswordChangedSuccessDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,  // Prevent dismissing the dialog by tapping outside
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),  // Rounded corners for the dialog
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,  // Wrap content
+              children: [
+                Icon(
+                  Icons.check_circle_outline,
+                  size: 60,
+                  color: Colors.green,  // Success icon color
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  'Password Changed!',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 13, 41, 88),  // Title color
+                  ),
+                  textAlign: TextAlign.center,  // Center the text
+                ),
+                const SizedBox(height: 10),
+                const Text(
+                  'Your password has been successfully changed. Please log in again.',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey,
+                  ),
+                  textAlign: TextAlign.center,  // Center the text
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 13, 41, 88),  // Button background color
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),  // Rounded corners for the button
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();  // Close the dialog
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (context) => const LoginPage()),  // Navigate to login page
+                    );
+                  },
+                  child: const Text(
+                    'OK',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -102,7 +162,6 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,  // Align to the left
                 children: [
-                  // Adjust the top padding to move content upwards
                   const SizedBox(height: 40),
                   Center(
                     child: Image.asset(
@@ -112,7 +171,6 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                   ),
                   const SizedBox(height: 20),  // Reduced padding between logo and title
                   
-                  // Left-align the title and description
                   const Text(
                     'Create New Password',
                     style: TextStyle(
@@ -130,7 +188,6 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                   ),
                   const SizedBox(height: 20),  // Reduced padding between description and form
                   
-                  // New Password Field
                   TextField(
                     controller: _newPasswordController,
                     onChanged: (_) => _validatePassword(),  // Validate as user types
@@ -153,7 +210,6 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                       ),
                     ),
                   ),
-                  // Display password error if necessary
                   if (_showPasswordError)
                     const Padding(
                       padding: EdgeInsets.only(top: 8.0),
@@ -164,7 +220,6 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                     ),
                   const SizedBox(height: 20),
                   
-                  // Confirm Password Field
                   TextField(
                     controller: _confirmPasswordController,
                     onChanged: (_) => _validatePasswordMatch(),  // Validate as user types
@@ -187,7 +242,6 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                       ),
                     ),
                   ),
-                  // Display password match error if necessary
                   if (_showPasswordMatchError)
                     const Padding(
                       padding: EdgeInsets.only(top: 8.0),
@@ -198,7 +252,6 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                     ),
                   const SizedBox(height: 20),
                   
-                  // Error Message
                   if (_errorMessage.isNotEmpty)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 16.0),
@@ -208,7 +261,6 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                       ),
                     ),
                   
-                  // Submit Button
                   _isLoading
                       ? const Center(child: CircularProgressIndicator())
                       : SizedBox(

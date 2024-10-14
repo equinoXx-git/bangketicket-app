@@ -5,9 +5,8 @@ import 'receipt_page.dart';
 
 class QRResultPage extends StatefulWidget {
   final String qrText;
-  final String collectorName; 
-  final String collector_id; 
-
+  final String collectorName;
+  final String collector_id;
 
   const QRResultPage({super.key, required this.qrText, required this.collectorName, required this.collector_id});
 
@@ -18,21 +17,18 @@ class QRResultPage extends StatefulWidget {
 class _QRResultPageState extends State<QRResultPage> {
   final TextEditingController amountController = TextEditingController();
   String vendorID = '';
-  String fullName = '';  // Vendor full name
+  String fullName = ''; // Vendor full name
 
   @override
   void initState() {
     super.initState();
-    debugPrint("Collector ID at QRResultPage: ${widget.collector_id}"); // Debug print
+    debugPrint("Collector ID at QRResultPage: ${widget.collector_id}");
     _parseQRCode();
-    _fetchVendorDetails();  // Fetch vendor details when the page loads
+    _fetchVendorDetails();
   }
 
   void _parseQRCode() {
-    // Extract Vendor ID from the QR text
     final lines = widget.qrText.split('\n');
-
-    // Loop through the lines to find "Vendor ID:"
     for (String line in lines) {
       if (line.startsWith('Vendor ID:')) {
         vendorID = line.replaceFirst('Vendor ID:', '').trim();
@@ -46,12 +42,11 @@ class _QRResultPageState extends State<QRResultPage> {
     var url = Uri.parse('http://192.168.100.37/bangketicket_api/get_vendor_details.php?vendorID=$vendorID');
     try {
       var response = await http.get(url);
-
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
         if (data['success']) {
           setState(() {
-            fullName = data['full_name'];  // Set vendor full name from the response
+            fullName = data['full_name']; // Set vendor full name from the response
           });
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -74,9 +69,14 @@ class _QRResultPageState extends State<QRResultPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('QR Code Result'),
-         leading: IconButton(
-          icon: const Icon(Icons.arrow_back), // Add back button icon
+        title: const Text(
+          'QR Code Result',
+          style: TextStyle(color: Color.fromARGB(255, 13, 41, 88), fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Color.fromARGB(255, 13, 41, 88)), // Add back button icon
           onPressed: () {
             Navigator.pop(context); // Go back to the previous page
           },
@@ -85,59 +85,91 @@ class _QRResultPageState extends State<QRResultPage> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,  // Make it stretch across the screen width
           children: [
             // Vendor Details Display (Vendor ID and Full Name)
-            RichText(
-              text: TextSpan(
-                children: [
-                  const TextSpan(
-                    text: 'Vendor Details:\n',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                  TextSpan(
-                    text: 'Vendor ID: $vendorID\n',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      color: Colors.black,
-                    ),
-                  ),
-                  TextSpan(
-                    text: 'Vendor Full Name: $fullName\n',  // Display vendor full name
-                    style: const TextStyle(
-                      fontSize: 18,
-                      color: Colors.black,
-                    ),
-                  ),
-                ],
-              ),
-              textAlign: TextAlign.center,
-            ),
+Container(
+  padding: const EdgeInsets.all(16.0),
+  decoration: BoxDecoration(
+    color: Colors.white,
+    borderRadius: BorderRadius.circular(12),
+    boxShadow: [
+      BoxShadow(
+        color: Colors.black.withOpacity(0.1),
+        blurRadius: 10,
+        spreadRadius: 1,
+      ),
+    ],
+  ),
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.center, // Center the title
+    children: [
+      const Text(
+        'Vendor Details',
+        style: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: Color.fromARGB(255, 13, 41, 88),
+        ),
+      ),
+      const SizedBox(height: 10),
+      Text(
+        'Vendor ID: $vendorID',
+        style: const TextStyle(
+          fontSize: 16,
+          color: Colors.black,
+        ),
+      ),
+      const SizedBox(height: 5),
+      Text(
+        'Vendor Full Name: $fullName',
+        style: const TextStyle(
+          fontSize: 16,
+          color: Colors.black,
+        ),
+      ),
+    ],
+  ),
+),
+
             const SizedBox(height: 20),
+
+            // Market Stall Fee Label
             const Text(
               'Market Stall Fee',
               style: TextStyle(
-                fontSize: 18,
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
+                color: Color.fromARGB(255, 13, 41, 88),
               ),
+              textAlign: TextAlign.start,
             ),
             const SizedBox(height: 10),
+
+            // Amount Text Field
             TextField(
               controller: amountController,
               keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Enter Amount',
-                border: OutlineInputBorder(),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                prefixIcon: const Icon(Icons.money, color: Color.fromARGB(255, 13, 41, 88)),
+                labelStyle: const TextStyle(color: Colors.grey),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(
+                    color: Color.fromARGB(255, 13, 41, 88),
+                    width: 2,
+                  ),
+                ),
               ),
             ),
             const SizedBox(height: 20),
+
+            // Confirm Button
             SizedBox(
-              width: 150,
               height: 50,
               child: ElevatedButton(
                 onPressed: () {
@@ -150,7 +182,6 @@ class _QRResultPageState extends State<QRResultPage> {
                     );
                     return;
                   }
-                  debugPrint("Collector ID at ReceiptPage transition: ${widget.collector_id}");
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -159,26 +190,31 @@ class _QRResultPageState extends State<QRResultPage> {
                         vendorID: vendorID,
                         fullName: fullName,  // Pass the fetched full name
                         collectorName: widget.collectorName,
-                        collector_id: widget.collector_id
+                        collector_id: widget.collector_id,
                       ),
                     ),
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 13, 41, 88),  // Blue button color
+                  backgroundColor: const Color.fromARGB(255, 13, 41, 88), // Blue button color
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
                 child: const Text(
                   'Confirm',
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
           ],
         ),
       ),
+      backgroundColor: const Color(0xFFF5F5F5),  // Light background color for contrast
     );
   }
 }

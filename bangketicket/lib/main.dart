@@ -15,9 +15,7 @@ class QRCodeScannerApp extends StatelessWidget {
   const QRCodeScannerApp({super.key});
 
   // Mock method to check if user is logged in
-  // You should replace this with your actual authentication check
   bool isLoggedIn() {
-    // Replace with your actual authentication logic
     return false; // Set this to true if the user is already logged in
   }
 
@@ -29,17 +27,16 @@ class QRCodeScannerApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      // Show LoginPage if the user is not logged in, otherwise show PermissionAndPrinterCheck
-      home: isLoggedIn() ? const PermissionAndPrinterCheck(collectorName: 'Default Collector', collector_id: 'Default',) : const LoginPage(),
+      home: isLoggedIn() ? const PermissionAndPrinterCheck(collectorName: 'Default Collector', collector_id: 'Default') : const LoginPage(),
     );
   }
 }
 
 class PermissionAndPrinterCheck extends StatefulWidget {
-  final String collectorName; // Add this parameter
-  final String collector_id; 
+  final String collectorName;
+  final String collector_id;
 
-  const PermissionAndPrinterCheck({super.key, required this.collectorName, required this.collector_id,});
+  const PermissionAndPrinterCheck({super.key, required this.collectorName, required this.collector_id});
 
   @override
   _PermissionAndPrinterCheckState createState() => _PermissionAndPrinterCheckState();
@@ -53,8 +50,7 @@ class _PermissionAndPrinterCheckState extends State<PermissionAndPrinterCheck> {
   }
 
   Future<void> _checkPermissions() async {
-
-    debugPrint('Collector ID at Permission Check: ${widget.collector_id}'); // Debug
+    debugPrint('Collector ID at Permission Check: ${widget.collector_id}');
 
     await Permission.camera.request();
     await Permission.location.request();
@@ -64,7 +60,7 @@ class _PermissionAndPrinterCheckState extends State<PermissionAndPrinterCheck> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => PrinterScanPage(collectorName: widget.collectorName, collector_id: widget.collector_id), // Pass collectorName
+        builder: (context) => PrinterScanPage(collectorName: widget.collectorName, collector_id: widget.collector_id),
       ),
     );
   }
@@ -78,17 +74,16 @@ class _PermissionAndPrinterCheckState extends State<PermissionAndPrinterCheck> {
 }
 
 class QRViewExample extends StatefulWidget {
-  final String collectorName; // Add this parameter
+  final String collectorName;
   final String collector_id;
 
-  const QRViewExample({super.key, required this.collectorName, required this.collector_id,});
+  const QRViewExample({super.key, required this.collectorName, required this.collector_id});
   
   @override
   _QRViewExampleState createState() => _QRViewExampleState();
 }
 
-class _QRViewExampleState extends State<QRViewExample>
-    with SingleTickerProviderStateMixin {
+class _QRViewExampleState extends State<QRViewExample> with SingleTickerProviderStateMixin {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   QRViewController? controller;
   bool isScanning = true;
@@ -105,10 +100,8 @@ class _QRViewExampleState extends State<QRViewExample>
       vsync: this,
     )..repeat(reverse: true);
 
-    _animation =
-        Tween<double>(begin: 0, end: cutOutSize - 2).animate(_animationController);
-
-        debugPrint('Collector ID at QRView: ${widget.collector_id}'); // Debug
+    _animation = Tween<double>(begin: 0, end: cutOutSize - 2).animate(_animationController);
+    debugPrint('Collector ID at QRView: ${widget.collector_id}');
   }
 
   @override
@@ -122,29 +115,33 @@ class _QRViewExampleState extends State<QRViewExample>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('QR Scanner'),
-         leading: IconButton(
-          icon: const Icon(Icons.arrow_back), // Add back button icon
+        title: const Text('QR Scanner', style: TextStyle(color: Color.fromARGB(255, 13, 41, 88), fontWeight: FontWeight.bold)),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Color.fromARGB(255, 13, 41, 88)),
           onPressed: () {
-            Navigator.pop(context); // Go back to the previous page
+            Navigator.pop(context);
           },
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.bluetooth), // Bluetooth icon
+            icon: const Icon(Icons.bluetooth, color: Color.fromARGB(255, 13, 41, 88)),
             tooltip: 'Connect to Printer',
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => PrinterScanPage(collectorName: widget.collectorName, collector_id: widget.collector_id,)), // Pass collectorName
+                MaterialPageRoute(
+                  builder: (context) => PrinterScanPage(collectorName: widget.collectorName, collector_id: widget.collector_id),
+                ),
               );
             },
           ),
         ],
+        backgroundColor: Colors.white,
+        elevation: 0,
       ),
       body: Stack(
         children: [
-          buildBackdropFilter(), // Apply blur effect to background
+          buildBackdropFilter(),
           buildQRView(context),
           buildScannerOverlay(context),
           if (isScanning) buildScanningLine(),
@@ -159,13 +156,12 @@ class _QRViewExampleState extends State<QRViewExample>
       key: qrKey,
       onQRViewCreated: _onQRViewCreated,
       overlay: QrScannerOverlayShape(
-        borderColor: Colors.transparent, // Hide border
+        borderColor: Colors.transparent,
         borderRadius: 0,
         borderLength: 0,
         borderWidth: 0,
         cutOutSize: cutOutSize,
-        cutOutBottomOffset: 0, // No bottom offset
-        overlayColor: Colors.transparent, // Ensure the overlay is transparent
+        overlayColor: Colors.transparent,
       ),
     );
   }
@@ -176,60 +172,47 @@ class _QRViewExampleState extends State<QRViewExample>
 
     for (String line in lines) {
       if (line.startsWith('Vendor ID:')) {
-        vendorID = line.replaceFirst('Vendor ID:', '').trim(); // Extract the vendorID value
+        vendorID = line.replaceFirst('Vendor ID:', '').trim();
         break;
       }
     }
 
     if (vendorID.isNotEmpty) {
       final url = 'http://192.168.100.37/bangketicket_api/validate_qr.php?vendorID=$vendorID';
-      print("Validation URL: $url"); // Debugging
+      print("Validation URL: $url");
 
       try {
         final response = await http.get(Uri.parse(url));
         final data = jsonDecode(response.body);
 
         if (data['status'] == 'valid') {
-          debugPrint("Collector ID at QRResultPage transition: ${widget.collector_id}"); // Debug print
-          String collectorId = widget.collector_id; // Extract collector_id from the response
-          debugPrint('Collector ID after QR validation: $collectorId'); // Debug
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => QRResultPage(qrText: qrCode, collectorName: widget.collectorName, collector_id: collectorId,), // Pass collectorName
+              builder: (context) => QRResultPage(qrText: qrCode, collectorName: widget.collectorName, collector_id: widget.collector_id),
             ),
           );
         } else {
-          String errorMessage = data['message'] ?? 'Invalid QR Code. Please try again.';
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(errorMessage),
-              backgroundColor: Colors.red,
-            ),
+            SnackBar(content: Text(data['message'] ?? 'Invalid QR Code. Please try again.'), backgroundColor: Colors.red),
           );
-          controller?.resumeCamera(); // Resume scanning if invalid
+          controller?.resumeCamera();
           setState(() {
             isScanning = true;
           });
         }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error validating QR code: $e'),
-            backgroundColor: Colors.red,
-          ),
+          SnackBar(content: Text('Error validating QR code: $e'), backgroundColor: Colors.red),
         );
-        controller?.resumeCamera(); // Resume scanning on error
+        controller?.resumeCamera();
         setState(() {
           isScanning = true;
         });
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Invalid QR code format: Vendor ID not found'),
-          backgroundColor: Colors.red,
-        ),
+        const SnackBar(content: Text('Invalid QR code format: Vendor ID not found'), backgroundColor: Colors.red),
       );
       controller?.resumeCamera();
       setState(() {
@@ -246,7 +229,7 @@ class _QRViewExampleState extends State<QRViewExample>
           isScanning = false;
         });
         controller.pauseCamera();
-        validateQRCode(scanData.code ?? ''); // Validate QR code
+        validateQRCode(scanData.code ?? '');
       }
     });
   }
@@ -254,9 +237,9 @@ class _QRViewExampleState extends State<QRViewExample>
   Widget buildBackdropFilter() {
     return Positioned.fill(
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+        filter: ImageFilter.blur(sigmaX: 15.0, sigmaY: 15.0),
         child: Container(
-          color: Colors.black.withOpacity(0.3),
+          color: Colors.black.withOpacity(0.25),
         ),
       ),
     );
@@ -274,12 +257,8 @@ class _QRViewExampleState extends State<QRViewExample>
       child: Column(
         children: [
           const Text(
-            'Place the QR Code inside the area',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+            'Align the QR Code',
+            style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 20),
           SizedBox(
@@ -287,7 +266,7 @@ class _QRViewExampleState extends State<QRViewExample>
             height: cutOutSize,
             child: CustomPaint(
               painter: QRScannerOverlayPainter(
-                borderColor: Colors.blue,
+                borderColor: const Color.fromARGB(255, 13, 41, 88),
                 borderWidth: 4,
                 cornerLength: 40,
               ),
@@ -311,7 +290,7 @@ class _QRViewExampleState extends State<QRViewExample>
           left: leftOffset,
           width: cutOutSize,
           child: Container(
-            color: const Color.fromARGB(255, 255, 0, 0).withOpacity(0.5),
+            color: const Color.fromARGB(255, 255, 0, 0).withOpacity(0.7),
             height: lineThickness,
           ),
         );
@@ -377,18 +356,12 @@ class QRScannerOverlayPainter extends CustomPainter {
 
     canvas.drawLine(Offset(0, cutOutOffset), Offset(cornerLength, cutOutOffset), paint);
     canvas.drawLine(Offset(0, cutOutOffset), Offset(0, cutOutOffset + cornerLength), paint);
-    canvas.drawLine(Offset(size.width, cutOutOffset),
-        Offset(size.width - cornerLength, cutOutOffset), paint);
-    canvas.drawLine(Offset(size.width, cutOutOffset),
-        Offset(size.width, cutOutOffset + cornerLength), paint);
-    canvas.drawLine(Offset(0, cutOutOffset + cutOutSize),
-        Offset(cornerLength, cutOutOffset + cutOutSize), paint);
-    canvas.drawLine(Offset(0, cutOutOffset + cutOutSize),
-        Offset(0, cutOutOffset + cutOutSize - cornerLength), paint);
-    canvas.drawLine(Offset(size.width, cutOutOffset + cutOutSize),
-        Offset(size.width - cornerLength, cutOutOffset + cutOutSize), paint);
-    canvas.drawLine(Offset(size.width, cutOutOffset + cutOutSize),
-        Offset(size.width, cutOutOffset + cutOutSize - cornerLength), paint);
+    canvas.drawLine(Offset(size.width, cutOutOffset), Offset(size.width - cornerLength, cutOutOffset), paint);
+    canvas.drawLine(Offset(size.width, cutOutOffset), Offset(size.width, cutOutOffset + cornerLength), paint);
+    canvas.drawLine(Offset(0, cutOutOffset + cutOutSize), Offset(cornerLength, cutOutOffset + cutOutSize), paint);
+    canvas.drawLine(Offset(0, cutOutOffset + cutOutSize), Offset(0, cutOutOffset + cutOutSize - cornerLength), paint);
+    canvas.drawLine(Offset(size.width, cutOutOffset + cutOutSize), Offset(size.width - cornerLength, cutOutOffset + cutOutSize), paint);
+    canvas.drawLine(Offset(size.width, cutOutOffset + cutOutSize), Offset(size.width, cutOutOffset + cutOutSize - cornerLength), paint);
   }
 
   @override

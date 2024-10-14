@@ -23,11 +23,10 @@ class ReceiptPage extends StatelessWidget {
     required this.fullName,
     required this.collectorName,
     required this.collector_id,
-  })
-  {
-  // Debug prints to verify collector details
-  debugPrint("Collector ID: $collector_id");
-}
+  }) {
+    // Debug prints to verify collector details
+    debugPrint("Collector ID: $collector_id");
+  }
 
   Future<void> _selectAndConnectPrinter(BuildContext context) async {
     List<BluetoothDevice> pairedDevices = await bluetooth.getBondedDevices();
@@ -113,25 +112,25 @@ class ReceiptPage extends StatelessWidget {
       return;
     }
 
-   // Load and trim the malolos-bw.png logo
-ByteData malolosBytes = await rootBundle.load('assets/malolos-bw.png');
-Uint8List malolosImageBytes = malolosBytes.buffer.asUint8List();
-img.Image? malolosImage = img.decodeImage(malolosImageBytes);
+    // Load and trim the malolos-bw.png logo
+    ByteData malolosBytes = await rootBundle.load('assets/malolos-bw.png');
+    Uint8List malolosImageBytes = malolosBytes.buffer.asUint8List();
+    img.Image? malolosImage = img.decodeImage(malolosImageBytes);
 
-if (malolosImage != null) {
-    // Trim the image to remove any white space around the content
-    img.Image trimmedMalolosImage = img.copyCrop(malolosImage, 0, 0, malolosImage.width, malolosImage.height);
+    if (malolosImage != null) {
+      // Trim the image to remove any white space around the content
+      img.Image trimmedMalolosImage = img.copyCrop(malolosImage, 0, 0, malolosImage.width, malolosImage.height);
 
-    // Resize and print the trimmed image
-    img.Image resizedMalolosImage = img.copyResize(trimmedMalolosImage, width: 400);
-    Uint8List malolosPrintableBytes = Uint8List.fromList(img.encodePng(resizedMalolosImage));
-    bluetooth.printImageBytes(malolosPrintableBytes);
-}
+      // Resize and print the trimmed image
+      img.Image resizedMalolosImage = img.copyResize(trimmedMalolosImage, width: 400);
+      Uint8List malolosPrintableBytes = Uint8List.fromList(img.encodePng(resizedMalolosImage));
+      bluetooth.printImageBytes(malolosPrintableBytes);
+    }
+
     // Print some space
     // Formatting receipt for Malolos City
     bluetooth.printCustom("Republic of the Philippines", 1, 1);
     bluetooth.printCustom("Malolos City", 1, 1);
-
 
     // Load and print the logo-bw.png logo
     ByteData logoBytes = await rootBundle.load('assets/logo-bw.png');
@@ -146,7 +145,6 @@ if (malolosImage != null) {
 
     String formattedDate = '${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day.toString().padLeft(2, '0')}';
     String formattedTime = '${DateTime.now().hour.toString().padLeft(2, '0')}:${DateTime.now().minute.toString().padLeft(2, '0')}:${DateTime.now().second.toString().padLeft(2, '0')}';
-
 
     bluetooth.printCustom("Official Receipt", 2, 1);
     bluetooth.printNewLine();
@@ -171,40 +169,40 @@ if (malolosImage != null) {
     _showPrintSuccessDialog(context);
   }
 
- Future<String> _insertTransaction(String vendorID, String date, String amount) async {
-  try {
-    DateTime currentDate = DateTime.now();
-    String formattedDate = "${currentDate.toLocal()}".split('.')[0];
+  Future<String> _insertTransaction(String vendorID, String date, String amount) async {
+    try {
+      DateTime currentDate = DateTime.now();
+      String formattedDate = "${currentDate.toLocal()}".split('.')[0];
 
-    debugPrint("Sending transaction data: Vendor ID: $vendorID, Date: $formattedDate, Amount: $amount, Collector ID: $collector_id");
-    final response = await http.post(
-      Uri.parse('http://192.168.100.37/bangketicket_api/insert_transaction.php'),
-      body: {
-        'vendorID': vendorID,
-        'date': formattedDate,
-        'amount': amount,
-        'collector_id': collector_id,
-      },
-    );
+      debugPrint("Sending transaction data: Vendor ID: $vendorID, Date: $formattedDate, Amount: $amount, Collector ID: $collector_id");
+      final response = await http.post(
+        Uri.parse('http://192.168.100.37/bangketicket_api/insert_transaction.php'),
+        body: {
+          'vendorID': vendorID,
+          'date': formattedDate,
+          'amount': amount,
+          'collector_id': collector_id,
+        },
+      );
 
-    if (response.statusCode == 200) {
-      final result = jsonDecode(response.body);
-      if (result['status'] == 'success') {
-        print('Transaction inserted successfully with ID: ${result['transactionID']}');
-        return result['transactionID'];
+      if (response.statusCode == 200) {
+        final result = jsonDecode(response.body);
+        if (result['status'] == 'success') {
+          print('Transaction inserted successfully with ID: ${result['transactionID']}');
+          return result['transactionID'];
+        } else {
+          print('Failed to insert transaction: ${result['message']}');
+          return '';
+        }
       } else {
-        print('Failed to insert transaction: ${result['message']}');
+        print('Failed to connect to server: ${response.statusCode}');
         return '';
       }
-    } else {
-      print('Failed to connect to server: ${response.statusCode}');
+    } catch (e) {
+      print('Error: $e');
       return '';
     }
-  } catch (e) {
-    print('Error: $e');
-    return '';
   }
-}
 
   void _showPrintSuccessDialog(BuildContext context) {
     showDialog(
@@ -212,43 +210,77 @@ if (malolosImage != null) {
       builder: (BuildContext context) {
         return Dialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(20),
           ),
           child: Padding(
             padding: const EdgeInsets.all(20),
             child: Column(
               mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Icon(Icons.check_circle, color: Colors.green, size: 60),
-                const SizedBox(height: 10),
+                // Success icon with a modern look
+                Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: const Color.fromARGB(255, 76, 175, 80), // Success green color
+                  ),
+                  child: const Icon(
+                    Icons.check_rounded,
+                    color: Colors.white,
+                    size: 50,
+                  ),
+                ),
+                const SizedBox(height: 20),
+
+                // Success message
                 const Text(
                   "Print Successful!",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 13, 41, 88),
+                  ),
                 ),
                 const SizedBox(height: 10),
+
                 const Text(
                   "Your receipt has been printed successfully.",
-                  style: TextStyle(fontSize: 16),
+                  style: TextStyle(fontSize: 16, color: Colors.black54),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context); // Close the dialog
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => QRViewExample(collectorName: collectorName, collector_id: collector_id,), // Navigate back to QRViewExample
+
+                // OK button
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context); // Close the dialog
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => QRViewExample(collectorName: collectorName, collector_id: collector_id,), // Navigate back to QRViewExample
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 13, 41, 88),
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 13, 41, 88),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Text(
+                      'OK',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
-                  child: const Text('OK', style: TextStyle(color: Colors.white)),
                 ),
               ],
             ),
@@ -274,67 +306,79 @@ if (malolosImage != null) {
           },
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
+      body: SingleChildScrollView( // Make content scrollable
+        child: Padding(
+          padding: const EdgeInsets.all(16.0), // Add sufficient padding
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // Ensure there is enough spacing between the image and the rest of the content
               Image.asset('assets/logo.png', height: 100),
-            const SizedBox(height: 10),
-            const Text(
-              'Official Receipt',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const Divider(),
-            const SizedBox(height: 10),
-            Text('Date: $formattedDate', style: const TextStyle(fontSize: 16)),
-            Text('Time: $formattedTime', style: const TextStyle(fontSize: 16)),
-            Text('Vendor ID: $vendorID', style: const TextStyle(fontSize: 16)),
-            Text('Vendor Name: $fullName', style: const TextStyle(fontSize: 16)), // Display vendor name
-            Text('Collector ID: $collector_id', style: const TextStyle(fontSize: 16)), // Display vendor name
-            Text('Collector: $collectorName', style: const TextStyle(fontSize: 16)), // Display the collector's name
-            const SizedBox(height: 10),
-            Text('Amount: ₱$amount', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 20),
-            const Divider(),
-            SizedBox(
-              width: 150,
-              height: 50,
-              child: ElevatedButton(
-                onPressed: () async {
-                  bool? isConnected = await bluetooth.isConnected;
-                  if (isConnected == true) {
-                    await _insertTransactionAndPrint(context);
-                  } else {
-                    _selectAndConnectPrinter(context);
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 13, 41, 88),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+              const SizedBox(height: 20), // Increase spacing between logo and text
+              const Text(
+                'Official Receipt',
+                style: TextStyle(
+                  fontSize: 24, // Increase the font size
+                  fontWeight: FontWeight.bold,
+                  color: Color.fromARGB(255, 13, 41, 88), // Palette color for the title
                 ),
-                child: const Text('Print Receipt', style: TextStyle(color: Colors.white)),
               ),
-            ),
-            const SizedBox(height: 10),
-            SizedBox(
-              width: 150,
-              height: 50,
-              child: ElevatedButton(
-                onPressed: () => Navigator.pop(context),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 180, 19, 19),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+              const Divider(
+                thickness: 2, // Make the divider thicker
+                color: Color.fromARGB(255, 13, 41, 88), // Palette color for the divider
+              ),
+
+              const SizedBox(height: 20), // Add spacing before the next set of text
+              Text('Date: $formattedDate', style: const TextStyle(fontSize: 16)),
+              Text('Time: $formattedTime', style: const TextStyle(fontSize: 16)),
+              Text('Vendor ID: $vendorID', style: const TextStyle(fontSize: 16)),
+              Text('Vendor Name: $fullName', style: const TextStyle(fontSize: 16)), // Display vendor name
+              Text('Collector ID: $collector_id', style: const TextStyle(fontSize: 16)), // Display vendor name
+              Text('Collector: $collectorName', style: const TextStyle(fontSize: 16)), // Display the collector's name
+              const SizedBox(height: 20), // Add more space between content sections
+              Text('Amount: ₱$amount', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 20),
+              const Divider(),
+              const SizedBox(height: 20), // Additional spacing before buttons
+              SizedBox(
+                width: 150,
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    bool? isConnected = await bluetooth.isConnected;
+                    if (isConnected == true) {
+                      await _insertTransactionAndPrint(context);
+                    } else {
+                      _selectAndConnectPrinter(context);
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 13, 41, 88),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
+                  child: const Text('Print Receipt', style: TextStyle(color: Colors.white)),
                 ),
-                child: const Text('Cancel', style: TextStyle(color: Colors.white)),
               ),
-            ),
-          ],
+              const SizedBox(height: 10),
+              SizedBox(
+                width: 150,
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 180, 19, 19),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text('Cancel', style: TextStyle(color: Colors.white)),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
