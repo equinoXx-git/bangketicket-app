@@ -88,49 +88,67 @@ class _QRResultPageState extends State<QRResultPage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,  // Make it stretch across the screen width
           children: [
             // Vendor Details Display (Vendor ID and Full Name)
-Container(
-  padding: const EdgeInsets.all(16.0),
-  decoration: BoxDecoration(
-    color: Colors.white,
-    borderRadius: BorderRadius.circular(12),
-    boxShadow: [
-      BoxShadow(
-        color: Colors.black.withOpacity(0.1),
-        blurRadius: 10,
-        spreadRadius: 1,
-      ),
-    ],
-  ),
-  child: Column(
-    crossAxisAlignment: CrossAxisAlignment.center, // Center the title
-    children: [
-      const Text(
-        'Vendor Details',
-        style: TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-          color: Color.fromARGB(255, 13, 41, 88),
-        ),
-      ),
-      const SizedBox(height: 10),
-      Text(
-        'Vendor ID: $vendorID',
-        style: const TextStyle(
-          fontSize: 16,
-          color: Colors.black,
-        ),
-      ),
-      const SizedBox(height: 5),
-      Text(
-        'Vendor Full Name: $fullName',
-        style: const TextStyle(
-          fontSize: 16,
-          color: Colors.black,
-        ),
-      ),
-    ],
-  ),
-),
+            Container(
+              padding: const EdgeInsets.all(16.0),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 10,
+                    spreadRadius: 1,
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,  // Center all the content
+                children: [
+                  const Text(
+                    'Vendor Details',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromARGB(255, 13, 41, 88),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  const Text(
+                    'Vendor ID:',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black,
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    vendorID,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,  // Make the vendor ID bold
+                      color: Colors.black,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  const Text(
+                    'Vendor Name:',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black,
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    fullName,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,  // Make the full name bold
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
+              ),
+            ),
 
             const SizedBox(height: 20),
 

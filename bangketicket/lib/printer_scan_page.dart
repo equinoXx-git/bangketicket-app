@@ -685,27 +685,29 @@ Widget _buildPairedDevicesList() {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Select Printer',
-          style: TextStyle(color: Color.fromARGB(255, 13, 41, 88)),
-        ),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Color.fromARGB(255, 13, 41, 88)),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _startScanning,
-            tooltip: 'Re-scan',
-          ),
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: _showLogoutConfirmation,
-            tooltip: 'Logout',
-          ),
-        ],
-      ),
+appBar: AppBar(
+  title: const Text(
+    'Select Printer',
+    style: TextStyle(color: Color.fromARGB(255, 13, 41, 88)),
+  ),
+  backgroundColor: Colors.white,
+  elevation: 0,
+  automaticallyImplyLeading: false, // Disable the back button
+  iconTheme: const IconThemeData(color: Color.fromARGB(255, 13, 41, 88)),
+  actions: [
+    IconButton(
+      icon: const Icon(Icons.refresh),
+      onPressed: _startScanning,
+      tooltip: 'Re-scan',
+    ),
+    IconButton(
+      icon: const Icon(Icons.logout),
+      onPressed: _showLogoutConfirmation,
+      tooltip: 'Logout',
+    ),
+  ],
+),
+
       body: Padding(
         padding: const EdgeInsets.all(12.0),
         child: _isScanning

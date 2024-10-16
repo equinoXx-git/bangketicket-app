@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'main.dart';
 import 'change_password.dart';  // Import for the ChangePasswordPage
+import 'forgot_password_email.dart';  // Import the ForgotPasswordEmailPage
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -210,7 +211,13 @@ class _LoginPageState extends State<LoginPage> {
                     alignment: Alignment.centerRight,
                     child: TextButton(
                       onPressed: () {
-                        // Forgot password logic
+                        // Navigate to Forgot Password Email Page
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ForgotPasswordEmailPage(),
+                          ),
+                        );
                       },
                       child: const Text('Forgot Password?'),
                     ),
