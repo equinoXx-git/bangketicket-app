@@ -48,7 +48,7 @@ class _PrinterScanPageState extends State<PrinterScanPage> {
     await intent.launch();
 
     bool? isOn = await bluetooth.isOn;
-    if (isOn == null || !isOn) {
+  if (isOn == null || !isOn) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
