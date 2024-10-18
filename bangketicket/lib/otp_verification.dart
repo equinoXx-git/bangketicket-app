@@ -35,7 +35,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
 
  try {
   final response = await http.post(
-    Uri.parse('http://192.168.100.37/bangketicket_api/verify_otp.php'),
+    Uri.parse('https://bangketicket.online/bangketicket_api/verify_otp.php'),
     body: {
       'email': widget.email,
       'otp': otp,

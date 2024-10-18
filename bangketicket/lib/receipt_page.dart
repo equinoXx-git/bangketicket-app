@@ -336,7 +336,7 @@ class ReceiptPage extends StatelessWidget {
       String formattedDate = "${currentDate.toLocal()}".split('.')[0];
 
       final response = await http.post(
-        Uri.parse('http://192.168.100.37/bangketicket_api/insert_transaction.php'),
+        Uri.parse('https://bangketicket.online/bangketicket_api/insert_transaction.php'),
         body: {
           'vendorID': vendorID,
           'date': formattedDate,

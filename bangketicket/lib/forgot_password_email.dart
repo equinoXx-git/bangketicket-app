@@ -30,7 +30,7 @@ Future<void> _submitEmail() async {
 
   try {
     final response = await http.post(
-      Uri.parse('http://192.168.100.37/bangketicket_api/forgot_password.php'),
+      Uri.parse('https://bangketicket.online/bangketicket_api/forgot_password.php'),
       body: {
         'email': _emailController.text,
       },

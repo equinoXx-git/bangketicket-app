@@ -178,7 +178,7 @@ class _QRViewExampleState extends State<QRViewExample> with SingleTickerProvider
     }
 
     if (vendorID.isNotEmpty) {
-      final url = 'http://192.168.100.37/bangketicket_api/validate_qr.php?vendorID=$vendorID';
+      final url = 'https://bangketicket.online/bangketicket_api/validate_qr.php?vendorID=$vendorID';
       print("Validation URL: $url");
 
       try {

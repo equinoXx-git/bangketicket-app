@@ -19,24 +19,26 @@ class _LoginPageState extends State<LoginPage> {
   String _errorMessage = '';
   bool _isPasswordVisible = false; // State to track if the password is visible
 
-  Future<void> _login() async {
+Future<void> _login() async {
+  setState(() {
+    _isLoading = true;
+    _errorMessage = '';
+  });
+
+  String username = _usernameController.text.trim();
+  String password = _passwordController.text.trim();
+
+  if (username.isEmpty || password.isEmpty) {
     setState(() {
-      _isLoading = true;
-      _errorMessage = '';
+      _errorMessage = 'Please fill in both fields';
+      _isLoading = false;
     });
+    return;
+  }
 
-    String username = _usernameController.text.trim();
-    String password = _passwordController.text.trim();
-
-    if (username.isEmpty || password.isEmpty) {
-      setState(() {
-        _errorMessage = 'Please fill in both fields';
-        _isLoading = false;
-      });
-      return;
-    }
-
-    var url = Uri.parse('http://192.168.100.37/bangketicket_api/validate_login.php');
+  var url = Uri.parse('https://bangketicket.online/bangketicket_api/validate_login.php');
+  
+  try {
     var response = await http.post(url, body: {
       'username': username,
       'password': password,
@@ -44,24 +46,21 @@ class _LoginPageState extends State<LoginPage> {
 
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
-
+      print("Response from API: $data"); // Debugging: Print the API response
+      
       if (data['success'] == true) {
         String collectorName = data['collector_details']['collectorName'];
         String collectorId = data['collector_details']['collector_id'];
 
-        debugPrint("Collector ID: $collectorId");
-
-        // Check if this is the first login (needs to change password)
+        // Navigate based on login conditions
         if (data['first_login'] == true) {
-          // Navigate to the Change Password Page
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => ChangePasswordPage(collectorId: collectorId),  // Pass collectorId to the change password page
+              builder: (context) => ChangePasswordPage(collectorId: collectorId),
             ),
           );
         } else {
-          // Proceed to the main page if login is successful and no password change is needed
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
@@ -78,15 +77,24 @@ class _LoginPageState extends State<LoginPage> {
         });
       }
     } else {
+      print('Error: ${response.statusCode}'); // Print the error code
+      print('Response body: ${response.body}'); // Print the full response body for debugging
       setState(() {
-        _errorMessage = 'Error connecting to the server. Please try again.';
+        _errorMessage = 'Error connecting to the server. Status code: ${response.statusCode}';
       });
     }
-
+  } catch (e) {
+    print("Error during HTTP request: $e"); // Print any exceptions
     setState(() {
-      _isLoading = false;
+      _errorMessage = 'Error connecting to the server.';
     });
   }
+
+  setState(() {
+    _isLoading = false;
+  });
+}
+
 
   @override
   Widget build(BuildContext context) {

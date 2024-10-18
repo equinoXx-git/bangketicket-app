@@ -50,7 +50,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
 
     try {
       final response = await http.post(
-        Uri.parse('http://192.168.100.37/bangketicket_api/change_password.php'),
+        Uri.parse('https://bangketicket.online/bangketicket_api/change_password.php'),
         body: {
           'collector_id': widget.collectorId,
           'new_password': _newPasswordController.text,

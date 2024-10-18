@@ -39,7 +39,7 @@ class _QRResultPageState extends State<QRResultPage> {
   Future<void> _fetchVendorDetails() async {
     if (vendorID.isEmpty) return;
 
-    var url = Uri.parse('http://192.168.100.37/bangketicket_api/get_vendor_details.php?vendorID=$vendorID');
+    var url = Uri.parse('https://bangketicket.online/bangketicket_api/get_vendor_details.php?vendorID=$vendorID');
     try {
       var response = await http.get(url);
       if (response.statusCode == 200) {

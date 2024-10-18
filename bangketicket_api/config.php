@@ -2,11 +2,11 @@
 
     $servername = "localhost";
 
-    $username = "root";
+    $username = "u895643266_innovatrix10";
 
-    $password = "";
+    $password = "InnovatrixACDJKM10!";
 
-    $dbname = "bangketicketdb"; 
+    $dbname = "u895643266_bangketicketdb"; 
 
     $conn = new mysqli($servername, $username, $password, $dbname);
 
