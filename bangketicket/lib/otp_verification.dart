@@ -64,12 +64,12 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
     }
   } else {
     setState(() {
-      _errorMessage = 'Error: ' + response.statusCode.toString() + ' - ' + response.body;
+      _errorMessage = 'Error: ${response.statusCode} - ${response.body}';
     });
   }
 } catch (error) {
   setState(() {
-    _errorMessage = 'An unexpected error occurred: ' + error.toString();
+    _errorMessage = 'An unexpected error occurred: $error';
   });
 } finally {
   setState(() {

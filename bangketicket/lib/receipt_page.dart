@@ -157,11 +157,11 @@ class ReceiptPage extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
+          child: const Padding(
+            padding: EdgeInsets.all(20.0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              children: const [
+              children: [
                 CircularProgressIndicator(color: Color.fromARGB(255, 13, 41, 88)),
                 SizedBox(height: 20),
                 Text('Connecting to the printer...', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
@@ -184,7 +184,7 @@ class ReceiptPage extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.error_outline, size: 60, color: Colors.orangeAccent),
+                const Icon(Icons.error_outline, size: 60, color: Colors.orangeAccent),
                 const SizedBox(height: 20),
                 const Text(
                   'Connection Failed',
@@ -377,9 +377,9 @@ class ReceiptPage extends StatelessWidget {
                 Container(
                   width: 80,
                   height: 80,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     shape: BoxShape.circle,
-                    color: const Color.fromARGB(255, 76, 175, 80),
+                    color: Color.fromARGB(255, 76, 175, 80),
                   ),
                   child: const Icon(
                     Icons.check_rounded,

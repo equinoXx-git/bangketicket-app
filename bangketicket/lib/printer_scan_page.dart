@@ -157,16 +157,16 @@ class _PrinterScanPageState extends State<PrinterScanPage> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
+        child: const Padding(
+          padding: EdgeInsets.all(20.0),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const CircularProgressIndicator(
+              CircularProgressIndicator(
                 color: Color.fromARGB(255, 13, 41, 88), // Customize progress color
               ),
-              const SizedBox(height: 20),
-              const Text(
+              SizedBox(height: 20),
+              Text(
                 'Connecting to the printer...',
                 style: TextStyle(
                   fontSize: 16,
@@ -195,7 +195,7 @@ void _showSuccessDialog(BluetoothDevice device) {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
+              const Icon(
                 Icons.check_circle_outline,
                 size: 60,
                 color: Colors.green, // Success icon color
@@ -329,7 +329,7 @@ void _showDisconnectedPrompt() {
           child: Column(
             mainAxisSize: MainAxisSize.min, // Wrap content
             children: [
-              Icon(
+              const Icon(
                 Icons.bluetooth_disabled, // Bluetooth disabled icon
                 size: 60,
                 color: Colors.redAccent, // Icon color for disconnected state
@@ -427,7 +427,7 @@ void _showReconnectDialog(BluetoothDevice device) {
           child: Column(
             mainAxisSize: MainAxisSize.min, // Wrap content
             children: [
-              Icon(
+              const Icon(
                 Icons.error_outline, // Error icon
                 size: 60,
                 color: Colors.orangeAccent, // Icon color for failure state
@@ -525,10 +525,10 @@ void _showReconnectDialog(BluetoothDevice device) {
               mainAxisSize: MainAxisSize.min, // Wrap content
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Icon(
+                const Icon(
                   Icons.logout,
                   size: 40,
-                  color: const Color.fromARGB(255, 13, 41, 88), // Icon color
+                  color: Color.fromARGB(255, 13, 41, 88), // Icon color
                 ),
                 const SizedBox(height: 20),
                 const Text(
@@ -598,14 +598,24 @@ void _showReconnectDialog(BluetoothDevice device) {
     );
   }
 
-  void _logout() {
-    // Navigate back to the login page, effectively logging the user out
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => const LoginPage()),
-      (Route<dynamic> route) => false,
-    );
+  // Modified logout function to disconnect from the printer
+void _logout() async {
+  // Try to disconnect from the printer, but don't wait indefinitely
+  if (_selectedDevice != null) {
+    try {
+      await bluetooth.disconnect().timeout(const Duration(seconds: 5));  // Timeout after 5 seconds
+    } catch (e) {
+      // Handle any disconnection error silently
+    }
   }
+
+  // Navigate back to the login page, effectively logging the user out
+  Navigator.pushAndRemoveUntil(
+    context,
+    MaterialPageRoute(builder: (context) => const LoginPage()),
+    (Route<dynamic> route) => false,
+  );
+}
 
   // Redesigned paired devices with modern Card UI
 Widget _buildPairedDevicesList() {
@@ -627,7 +637,7 @@ Widget _buildPairedDevicesList() {
                 borderRadius: BorderRadius.circular(15),
               ),
               child: ListTile(
-                leading: Icon(Icons.devices, color: const Color.fromARGB(255, 13, 41, 88)),
+                leading: const Icon(Icons.devices, color: Color.fromARGB(255, 13, 41, 88)),
                 title: Text(device.name ?? "Unknown Device"),
                 subtitle: Text(device.address!),
                 trailing: SizedBox(
@@ -669,7 +679,7 @@ Widget _buildPairedDevicesList() {
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: ListTile(
-                  leading: Icon(Icons.devices, color: const Color.fromARGB(255, 13, 41, 88)),
+                  leading: const Icon(Icons.devices, color: Color.fromARGB(255, 13, 41, 88)),
                   title: Text(device.name ?? "Unknown Device"),
                   subtitle: Text(device.address!),
                   trailing: IconButton(

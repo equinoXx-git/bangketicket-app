@@ -4,6 +4,8 @@ import 'dart:convert';  // For decoding JSON responses
 import 'otp_verification.dart'; // Import the Change Password page
 
 class ForgotPasswordEmailPage extends StatefulWidget {
+  const ForgotPasswordEmailPage({super.key});
+
   @override
   _ForgotPasswordEmailPageState createState() => _ForgotPasswordEmailPageState();
 }
@@ -78,7 +80,7 @@ void _showOtpSentDialog() {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
+              const Icon(
                 Icons.check_circle_outline,
                 size: 60,
                 color: Colors.green,

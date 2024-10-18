@@ -99,7 +99,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
             child: Column(
               mainAxisSize: MainAxisSize.min,  // Wrap content
               children: [
-                Icon(
+                const Icon(
                   Icons.check_circle_outline,
                   size: 60,
                   color: Colors.green,  // Success icon color
