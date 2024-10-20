@@ -188,6 +188,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                   ),
                   const SizedBox(height: 20),  // Reduced padding between description and form
                   
+                  // New password field
                   TextField(
                     controller: _newPasswordController,
                     onChanged: (_) => _validatePassword(),  // Validate as user types
@@ -195,7 +196,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                     decoration: InputDecoration(
                       labelText: 'Password',
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(20),  // Rounded corners
+                        borderSide: const BorderSide(color: Colors.grey, width: 1),
                       ),
                       prefixIcon: const Icon(Icons.lock),
                       suffixIcon: IconButton(
@@ -208,6 +210,9 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                           });
                         },
                       ),
+                      filled: true,  // Add background color
+                      fillColor: Colors.white.withOpacity(0.8),  // Semi-transparent background
+                      contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                     ),
                   ),
                   if (_showPasswordError)
@@ -220,6 +225,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                     ),
                   const SizedBox(height: 20),
                   
+                  // Confirm password field
                   TextField(
                     controller: _confirmPasswordController,
                     onChanged: (_) => _validatePasswordMatch(),  // Validate as user types
@@ -227,7 +233,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                     decoration: InputDecoration(
                       labelText: 'Confirm Password',
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(20),  // Rounded corners
+                        borderSide: const BorderSide(color: Colors.grey, width: 1),
                       ),
                       prefixIcon: const Icon(Icons.lock),
                       suffixIcon: IconButton(
@@ -240,6 +247,9 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                           });
                         },
                       ),
+                      filled: true,  // Add background color
+                      fillColor: Colors.white.withOpacity(0.8),  // Semi-transparent background
+                      contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                     ),
                   ),
                   if (_showPasswordMatchError)

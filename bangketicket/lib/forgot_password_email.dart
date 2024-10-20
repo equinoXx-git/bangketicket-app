@@ -15,126 +15,125 @@ class _ForgotPasswordEmailPageState extends State<ForgotPasswordEmailPage> {
   bool _isLoading = false;
   String _errorMessage = '';
 
-Future<void> _submitEmail() async {
-  if (_emailController.text.isEmpty) {
-    setState(() {
-      _errorMessage = 'Please enter your email.';
-    });
-    return;
-  }
-
-  setState(() {
-    _isLoading = true;
-    _errorMessage = '';
-  });
-
-  try {
-    final response = await http.post(
-      Uri.parse('https://bangketicket.online/bangketicket_api/forgot_password.php'),
-      body: {
-        'email': _emailController.text,
-      },
-    );
-
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
+  Future<void> _submitEmail() async {
+    if (_emailController.text.isEmpty) {
+      setState(() {
+        _errorMessage = 'Please enter your email.';
+      });
+      return;
+    }
 
     setState(() {
-      _isLoading = false;
+      _isLoading = true;
+      _errorMessage = '';
     });
 
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      if (data['success'] == true) {
-        _showOtpSentDialog();
+    try {
+      final response = await http.post(
+        Uri.parse('https://bangketicket.online/bangketicket_api/forgot_password.php'),
+        body: {
+          'email': _emailController.text,
+        },
+      );
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      setState(() {
+        _isLoading = false;
+      });
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data['success'] == true) {
+          _showOtpSentDialog();
+        } else {
+          setState(() {
+            _errorMessage = data['message'] ?? 'Error sending OTP. Please try again.';
+          });
+        }
       } else {
         setState(() {
-          _errorMessage = data['message'] ?? 'Error sending OTP. Please try again.';
+          _errorMessage = 'Error connecting to the server. Please try again.';
         });
       }
-    } else {
+    } catch (error) {
+      print('Error: $error');
       setState(() {
-        _errorMessage = 'Error connecting to the server. Please try again.';
+        _isLoading = false;
+        _errorMessage = 'An unexpected error occurred. Please try again.';
       });
     }
-  } catch (error) {
-    print('Error: $error');
-    setState(() {
-      _isLoading = false;
-      _errorMessage = 'An unexpected error occurred. Please try again.';
-    });
   }
-}
 
-void _showOtpSentDialog() {
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (BuildContext context) {
-      return Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(
-                Icons.check_circle_outline,
-                size: 60,
-                color: Colors.green,
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                'OTP Sent!',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Color.fromARGB(255, 13, 41, 88),
+  void _showOtpSentDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(
+                  Icons.check_circle_outline,
+                  size: 60,
+                  color: Colors.green,
                 ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 10),
-              const Text(
-                'An OTP has been sent to your email. Please use it to reset your password.',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey,
+                const SizedBox(height: 20),
+                const Text(
+                  'OTP Sent!',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 13, 41, 88),
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 13, 41, 88),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                const SizedBox(height: 10),
+                const Text(
+                  'An OTP has been sent to your email. Please use it to reset your password.',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 13, 41, 88),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();  // Close the dialog
+
+                    // Navigate to the OTP verification page
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        builder: (context) => OtpVerificationPage(email: _emailController.text),
+                      ),
+                    );
+                  },
+                  child: const Text(
+                    'OK',
+                    style: TextStyle(color: Colors.white),
                   ),
                 ),
-                onPressed: () {
-                  Navigator.of(context).pop();  // Close the dialog
-                  
-                  // Navigate to the OTP verification page
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(
-                      builder: (context) => OtpVerificationPage(email: _emailController.text),
-                    ),
-                  );
-                },
-                child: const Text(
-                  'OK',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      );
-    },
-  );
-}
-
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -172,19 +171,29 @@ void _showOtpSentDialog() {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  
+
+                  // Updated email input field design
                   TextField(
                     controller: _emailController,
                     decoration: InputDecoration(
                       labelText: 'Email',
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(20), // More rounded corners
+                        borderSide: const BorderSide(color: Colors.grey, width: 1),
                       ),
                       prefixIcon: const Icon(Icons.email),
+                      filled: true, // Add background color
+                      fillColor: Colors.white.withOpacity(0.8), // Semi-transparent background
+                      contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20),
+                        borderSide: const BorderSide(color: Colors.grey, width: 1),
+                      ),
                     ),
                   ),
+
                   const SizedBox(height: 20),
-                  
+
                   if (_errorMessage.isNotEmpty)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 16.0),
@@ -193,7 +202,7 @@ void _showOtpSentDialog() {
                         style: const TextStyle(color: Colors.red),
                       ),
                     ),
-                  
+
                   _isLoading
                       ? const Center(child: CircularProgressIndicator())
                       : SizedBox(
