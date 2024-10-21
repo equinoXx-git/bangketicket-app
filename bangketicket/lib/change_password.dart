@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';  // For decoding JSON responses
 import 'login.dart';  // Import your login page
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ChangePasswordPage extends StatefulWidget {
   final String collectorId;
@@ -66,6 +67,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
         if (data['success'] == true) {
           _newPasswordController.clear();
           _confirmPasswordController.clear();
+          _clearSavedCredentials();
           _showPasswordChangedSuccessDialog();
         } else {
           setState(() {
@@ -83,6 +85,14 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
         _errorMessage = 'An unexpected error occurred. Please try again.';
       });
     }
+  }
+
+  // Method to clear saved credentials from SharedPreferences
+  Future<void> _clearSavedCredentials() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove('username');
+    prefs.remove('password');
+    prefs.setBool('remember_me', false); // Uncheck "Remember Me" since the password has changed
   }
 
   void _showPasswordChangedSuccessDialog() {
@@ -145,6 +155,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
               ],
             ),
           ),
+               backgroundColor: const Color(0xFFF5F5F5),
         );
       },
     );
@@ -300,6 +311,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
           ),
         ],
       ),
+           backgroundColor: const Color(0xFFF5F5F5),
     );
   }
 

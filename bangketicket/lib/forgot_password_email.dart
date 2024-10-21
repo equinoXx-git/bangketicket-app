@@ -232,6 +232,7 @@ class _ForgotPasswordEmailPageState extends State<ForgotPasswordEmailPage> {
           ),
         ],
       ),
+           backgroundColor: const Color(0xFFF5F5F5),
     );
   }
 

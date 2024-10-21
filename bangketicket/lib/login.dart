@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'main.dart';
-import 'change_password.dart';  // Import for the ChangePasswordPage
-import 'forgot_password_email.dart';  // Import the ForgotPasswordEmailPage
+import 'change_password.dart';  
+import 'forgot_password_email.dart';  
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -159,6 +160,41 @@ void _showTimeoutDialog() {
   );
 }
 
+  @override
+  void initState() {
+    super.initState();
+    _loadRememberMe();  // Load saved credentials when the page initializes
+  }
+
+  // Method to load saved credentials from SharedPreferences
+  Future<void> _loadRememberMe() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool rememberMe = prefs.getBool('remember_me') ?? false;
+    String username = prefs.getString('username') ?? '';
+    String password = prefs.getString('password') ?? '';
+
+    if (rememberMe) {
+      setState(() {
+        _isRememberMeChecked = true;
+        _usernameController.text = username;
+        _passwordController.text = password;
+      });
+    }
+  }
+
+  // Method to save credentials to SharedPreferences
+  Future<void> _saveRememberMe() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('remember_me', _isRememberMeChecked);
+    if (_isRememberMeChecked) {
+      prefs.setString('username', _usernameController.text);
+      prefs.setString('password', _passwordController.text);
+    } else {
+      prefs.remove('username');
+      prefs.remove('password');
+    }
+  }
+
 
 Future<void> _login() async {
   setState(() {
@@ -203,6 +239,8 @@ Future<void> _login() async {
       if (data['success'] == true) {
         String collectorName = data['collector_details']['collectorName'];
         String collectorId = data['collector_details']['collector_id'];
+
+        _saveRememberMe(); 
 
         // Navigate based on login conditions
         if (data['first_login'] == true) {
@@ -465,6 +503,7 @@ Future<void> _login() async {
           ),
         ],
       ),
+           backgroundColor: const Color(0xFFF5F5F5),
     );
   }
 }

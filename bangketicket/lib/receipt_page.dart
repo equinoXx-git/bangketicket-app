@@ -418,6 +418,7 @@ class ReceiptPage extends StatelessWidget {
               ],
             ),
           ),
+          backgroundColor: const Color(0xFFFFFFFF),
         );
       },
     );
@@ -431,9 +432,17 @@ class ReceiptPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Receipt Preview'),
+        title: const Text(
+          'Receipt Preview',
+          style: TextStyle(
+            color: Color.fromARGB(255, 13, 41, 88),
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: Colors.white,
+        elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back, color: Color.fromARGB(255, 13, 41, 88)),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -445,22 +454,74 @@ class ReceiptPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Image.asset('assets/logo.png', height: 100),
+              // Header Image (Logo)
+              Image.asset('assets/malolos.png', height: 110),
               const SizedBox(height: 20),
-              const Text('Official Receipt', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-              const Divider(thickness: 2),
+
+              // Title
+              const Text(
+                'Official Receipt',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Color.fromARGB(255, 13, 41, 88),
+                ),
+              ),
               const SizedBox(height: 20),
-              Text('Date: $formattedDate', style: const TextStyle(fontSize: 16)),
-              Text('Time: $formattedTime', style: const TextStyle(fontSize: 16)),
-              Text('Vendor ID: $vendorID', style: const TextStyle(fontSize: 16)),
-              Text('Vendor Name: ${_formatVendorName(fullName)}', style: const TextStyle(fontSize: 16)),
-              Text('Collector ID: $collector_id', style: const TextStyle(fontSize: 16)),
-              Text('Collector: $collectorName', style: const TextStyle(fontSize: 16)),
+
+              // Receipt Details Section (Rounded Container)
+              Container(
+                padding: const EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.2),
+                      spreadRadius: 2,
+                      blurRadius: 6,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildReceiptDetailRow('Date', formattedDate),
+                    _buildReceiptDetailRow('Time', formattedTime),
+                    _buildReceiptDetailRow('Vendor ID', vendorID),
+                    _buildReceiptDetailRow('Vendor Name', _formatVendorName(fullName)),
+                    _buildReceiptDetailRow('Collector ID', collector_id),
+                    _buildReceiptDetailRow('Collector', collectorName),
+                  ],
+                ),
+              ),
+
               const SizedBox(height: 20),
-              Text('Amount: ₱$amount', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+
+              // Amount Section (Larger Font and Bold)
+              Container(
+                padding: const EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  color: const Color.fromARGB(255, 244, 246, 255),
+                  border: Border.all(color: const Color.fromARGB(255, 13, 41, 88)),
+                ),
+                child: Center(
+                  child: Text(
+                    'Amount: ₱$amount',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromARGB(255, 13, 41, 88),
+                    ),
+                  ),
+                ),
+              ),
+
               const SizedBox(height: 20),
-              const Divider(),
-              const SizedBox(height: 20),
+
+              // Print and Cancel Buttons
               SizedBox(
                 width: 150,
                 height: 50,
@@ -475,9 +536,17 @@ class ReceiptPage extends StatelessWidget {
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 13, 41, 88),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
-                  child: const Text('Print Receipt', style: TextStyle(color: Colors.white)),
+                  child: const Text(
+                    'Print Receipt',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(height: 10),
@@ -488,14 +557,51 @@ class ReceiptPage extends StatelessWidget {
                   onPressed: () => Navigator.pop(context),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 180, 19, 19),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
-                  child: const Text('Cancel', style: TextStyle(color: Colors.white)),
+                  child: const Text(
+                    'Cancel',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
+                  ),
                 ),
               ),
             ],
           ),
         ),
+      ),
+           backgroundColor: const Color(0xFFF5F5F5),
+    );
+  }
+
+  // Helper function to build receipt detail rows
+  Widget _buildReceiptDetailRow(String title, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            '$title:',
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: Colors.black87,
+            ),
+          ),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w400,
+              color: Colors.black54,
+            ),
+          ),
+        ],
       ),
     );
   }

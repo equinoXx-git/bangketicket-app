@@ -177,6 +177,7 @@ class _PrinterScanPageState extends State<PrinterScanPage> {
             ],
           ),
         ),
+        backgroundColor: const Color(0xFFFFFFFF),
       );
     },
   );
@@ -238,6 +239,7 @@ void _showSuccessDialog(BluetoothDevice device) {
             ],
           ),
         ),
+        backgroundColor: const Color(0xFFFFFFFF),
       );
     },
   );
@@ -408,6 +410,7 @@ void _showDisconnectedPrompt() {
             ],
           ),
         ),
+        backgroundColor: const Color(0xFFFFFFFF),
       );
     },
   );
@@ -500,6 +503,7 @@ void _showReconnectDialog(BluetoothDevice device) {
             ],
           ),
         ),
+        backgroundColor: const Color(0xFFFFFFFF),
       );
     },
   );
@@ -631,6 +635,7 @@ Widget _buildPairedDevicesList() {
           itemBuilder: (context, index) {
             final device = _pairedDevices[index];
             return Card(
+              color: const Color(0xFFFFFFFF),
               elevation: 3,
               margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
               shape: RoundedRectangleBorder(
@@ -692,32 +697,35 @@ Widget _buildPairedDevicesList() {
           );
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-appBar: AppBar(
-  title: const Text(
-    'Select Printer',
-    style: TextStyle(color: Color.fromARGB(255, 13, 41, 88)),
-  ),
-  backgroundColor: Colors.white,
-  elevation: 0,
-  automaticallyImplyLeading: false, // Disable the back button
-  iconTheme: const IconThemeData(color: Color.fromARGB(255, 13, 41, 88)),
-  actions: [
-    IconButton(
-      icon: const Icon(Icons.refresh),
-      onPressed: _startScanning,
-      tooltip: 'Re-scan',
-    ),
-    IconButton(
-      icon: const Icon(Icons.logout),
-      onPressed: _showLogoutConfirmation,
-      tooltip: 'Logout',
-    ),
-  ],
-),
-
+      appBar: AppBar(
+        title: const Text(
+          'Select Printer',
+          style: TextStyle(
+            color: Color.fromARGB(255, 13, 41, 88),
+            fontWeight: FontWeight.bold,
+            fontSize: 20,  // Match the font size from QRResultPage
+          ),
+        ),
+        backgroundColor: Colors.white, // Same background color as QRResultPage
+        elevation: 0, // Flat AppBar style
+        iconTheme: const IconThemeData(color: Color.fromARGB(255, 13, 41, 88)),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: _startScanning,
+            tooltip: 'Re-scan',
+          ),
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: _showLogoutConfirmation,
+            tooltip: 'Logout',
+          ),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(12.0),
         child: _isScanning
@@ -758,6 +766,7 @@ appBar: AppBar(
           style: TextStyle(color: Color.fromARGB(255, 13, 41, 88)),
         ),
       ),
+           backgroundColor: const Color(0xFFF5F5F5),
     );
   }
 }
