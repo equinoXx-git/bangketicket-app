@@ -116,17 +116,27 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                   ),
                   const SizedBox(height: 20), // Reduced padding between description and form
                   
+                  // Updated OTP input field design
                   TextField(
                     controller: _otpController,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       labelText: 'OTP',
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(20), // Rounded corners
+                        borderSide: const BorderSide(color: Colors.grey, width: 1),
                       ),
                       prefixIcon: const Icon(Icons.security),
+                      filled: true, // Add background color
+                      fillColor: Colors.white.withOpacity(0.8), // Semi-transparent background
+                      contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20),
+                        borderSide: const BorderSide(color: Colors.grey, width: 1),
+                      ),
                     ),
                   ),
+
                   const SizedBox(height: 20),
 
                   if (_errorMessage.isNotEmpty)
@@ -167,8 +177,10 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
           ),
         ],
       ),
+      backgroundColor: const Color(0xFFF5F5F5),
     );
   }
+
 
   @override
   void dispose() {
