@@ -146,7 +146,66 @@ class ReceiptPage extends StatelessWidget {
       );
     }
   }
-
+void _showTransactionExistsDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                width: 80,
+                height: 80,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.orangeAccent, // Use orange color to indicate a warning
+                ),
+                child: const Icon(
+                  Icons.warning_amber_rounded,
+                  color: Colors.white,
+                  size: 50,
+                ),
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                "Transaction Exists",
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
+              const Text(
+                "Transaction already exists for this vendor today.",
+                style: TextStyle(fontSize: 16, color: Colors.black54),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context); // Close the dialog
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 13, 41, 88),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: const Text('OK', style: TextStyle(color: Colors.white)),
+              ),
+            ],
+          ),
+        ),
+        backgroundColor: const Color(0xFFFFFFFF),
+      );
+    },
+  );
+}
   // Function to show connecting dialog
   void _showConnectingDialog(BuildContext context) {
     showDialog(
@@ -274,18 +333,18 @@ class ReceiptPage extends StatelessWidget {
     );
   }
 
-  Future<void> _insertTransactionAndPrint(BuildContext context) async {
-    debugPrint("Collector ID before transaction insertion: $collector_id");
-    String transactionID = await _insertTransaction(vendorID, DateTime.now().toString(), amount);
+Future<void> _insertTransactionAndPrint(BuildContext context) async {
+  debugPrint("Collector ID before transaction insertion: $collector_id");
+  String transactionID = await _insertTransaction(vendorID, DateTime.now().toString(), amount);
 
-    if (transactionID.isNotEmpty) {
-      _printReceipt(context, transactionID);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to insert the transaction.')),
-      );
-    }
+  if (transactionID.isNotEmpty) {
+    _printReceipt(context, transactionID);
+  } else {
+    // Show transaction exists dialog if the transaction failed due to a duplicate entry
+    _showTransactionExistsDialog(context);
   }
+}
+
 
   Future<void> _printReceipt(BuildContext context, String transactionID) async {
     bool? isConnected = await bluetooth.isConnected;
