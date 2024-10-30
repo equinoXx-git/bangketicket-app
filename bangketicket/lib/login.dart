@@ -91,6 +91,7 @@ void _showNoConnectionDialog() {
             ],
           ),
         ),
+               backgroundColor: const Color(0xFFF5F5F5),
       );
     },
   );
@@ -155,6 +156,7 @@ void _showTimeoutDialog() {
             ],
           ),
         ),
+               backgroundColor: const Color(0xFFF5F5F5),
       );
     },
   );

@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "../../../../bangketicket_api"
+		},
+		{
+			"path": "../../bangketicket_api"
 		}
 	],
 	"settings": {}
